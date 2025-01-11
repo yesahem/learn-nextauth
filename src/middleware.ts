@@ -5,15 +5,15 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request });
   const url = request.nextUrl;
-  console.log(url);
-
-  if (
+  console.log("i m in url", url);
+  const isUserSignnedIn =
     token &&
-    (url.pathname.startsWith("/signin") || url.pathname.startsWith("/signup"))
-  ) {
-    return NextResponse.next();
+    (url.pathname.startsWith("/signin") || url.pathname.startsWith("/signup"));
+
+  if (isUserSignnedIn) {
+    return NextResponse.redirect(new URL("/dashboard"));
   } else {
-    return NextResponse.redirect(new URL("/signin", request.url));
+    return NextResponse.next();
   }
 }
 

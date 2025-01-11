@@ -13,22 +13,21 @@ datasource db {
   url      = env("DB_URL")
 }
 
-model User{
-  id String  @default(uuid()) 
-  username  String 
-  email String @id 
-  password String
-  otp String
-  otpExpiry DateTime
-  isAcceptingMessages Boolean @default(true)
-  isVerified Boolean @default(false)
-  messages Message[]
-  }
+model User {
+  id                  String    @default(uuid())
+  username            String    @unique
+  email               String    @id
+  password            String
+  otp                 String
+  otpExpiry           DateTime
+  isAcceptingMessages Boolean   @default(true)
+  isVerified          Boolean   @default(false)
+  messages            Message[]
+}
 
-model Message{
-    id String @default(uuid()) @id
-    content String
-    createdAT DateTime @default(now())
-    user User @relation(fields: [content], references: [email])
-
-  }
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  createdAT DateTime @default(now())
+  user      User     @relation(fields: [content], references: [email])
+}

@@ -5,6 +5,10 @@ import bcrypt from "bcryptjs";
 export async function POST(request: Request) {
   try {
     const { username, email, password } = await request.json();
+    console.log(
+      "username" + username + "\n" + "email" + email,
+      "\n" + "password" + password,
+    );
     const existingVerifiedUser = await prisma.user.findFirst({
       where: {
         username,
@@ -26,7 +30,7 @@ export async function POST(request: Request) {
         email,
       },
     });
-    const otp = Math.floor(100000 + Math.random() * 9000000).toString();
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     console.log("Generated Otp", otp);
     if (exisitngUserByEmail) {
       if (exisitngUserByEmail.isVerified) {
@@ -63,7 +67,7 @@ export async function POST(request: Request) {
           otp,
           otpExpiry: expiryDate,
           isAcceptingMessages: true,
-          isVerified: true,
+          isVerified: false,
         },
       });
       console.log("userInserted sucesssfully", insertNewUser);
@@ -74,7 +78,7 @@ export async function POST(request: Request) {
         otp,
       );
 
-      console.log(sendVerificationMail);
+      console.log("verification email confirmation", sendVerificationMail);
       if (!sendVerificationMail.sucess) {
         return Response.json(
           {

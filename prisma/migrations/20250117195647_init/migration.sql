@@ -21,5 +21,8 @@ CREATE TABLE "Message" (
     CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_content_fkey" FOREIGN KEY ("content") REFERENCES "User"("email") ON DELETE RESTRICT ON UPDATE CASCADE;

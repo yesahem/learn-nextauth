@@ -2,7 +2,6 @@
 
 import { prisma } from "@/lib/prisma";
 import { userNameValidate } from "@/schema/signUpSchema";
-import Error from "next/error";
 import { z } from "zod";
 
 const usernameQuerySchema = z.object({
@@ -38,13 +37,26 @@ export async function GET(req: Request) {
     const doesUsernameAlreadyTaken = await prisma.user.findUnique({
       where: {
         username,
+        isVerified: true,
       },
     });
 
     if (doesUsernameAlreadyTaken) {
-      if (doesUsernameAlreadyTaken.isVerified) {
-        return;
-      }
+      return Response.json(
+        {
+          success: false,
+          message: "Username already taken",
+        },
+        { status: 405 },
+      );
+    } else {
+      return Response.json(
+        {
+          success: true,
+          message: "Username is available",
+        },
+        { status: 201 },
+      );
     }
   } catch (error) {
     console.error("something went wrong while validating UserName", error);
@@ -52,6 +64,7 @@ export async function GET(req: Request) {
       {
         success: false,
         message: "Error Validating username",
+        error: error,
       },
       { status: 403 },
     );
